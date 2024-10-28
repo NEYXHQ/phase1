@@ -27,5 +27,8 @@ dist/
 # System files
 .DS_Store
 
+# Executables or build outputs (if any binaries are generated in the bin/ folder)
+bin/
+
 # Hardhat Ignition default folder for deployments against a local node
 ignition/deployments/chain-31337
