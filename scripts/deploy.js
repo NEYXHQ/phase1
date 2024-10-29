@@ -25,9 +25,9 @@ async function main() {
   console.log("SUYT2TokenSale deployed to:", await tokenSale.getAddress());
 
   // Mint some SUYT1 tokens for testing purposes
-  const mintAmount = ethers.parseUnits("1000", 18); // 1000 SUYT1 tokens
+  const mintAmount = ethers.parseUnits("10000", 18); // 1000 SUYT1 tokens
   await myToken.mint(deployer.address, mintAmount);
-  console.log("Minted 1000 SUYT1 tokens to deployer:", deployer.address);
+  console.log("Minted 10000 SUYT1 tokens to deployer:", deployer.address);
 
   // Optional: Mint some USDC to another test account for testing
   const recipient = "0x054131B1EE0c96b5c9EbC6217F4f5E072c0E03C6"; // Replace with a test address
