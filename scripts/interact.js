@@ -1,60 +1,44 @@
-import { ethers } from "ethers";
-import MyTokenABI from "./bin/contracts/MyToken.json"; // Replace with the actual ABI JSON file for MyToken
-import TokenSaleABI from "./bin/contracts/SuyvanT-solc-output.json"; // Replace with the actual ABI JSON file for SUYT2TokenSale
+const hre = require("hardhat");
+const { ethers } = hre;
 
-// Deployed contract addresses
-const myTokenAddress = "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d"; // Replace with deployed MyToken address
-const tokenSaleAddress = "0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1"; // Replace with deployed TokenSale address
-const mockUSDCAddress = "0x59b670e9fA9D0A427751Af201D676719a970857b" // USDC
+async function main() {
+  // Specify deployed contract addresses
+  const myTokenAddress = "0xYourMyTokenAddress";
+  const tokenSaleAddress = "0xYourTokenSaleAddress";
 
-async function connectWallet() {
-  if (window.ethereum) {
-    // Request account access if needed
-    await window.ethereum.request({ method: "eth_requestAccounts" });
+  // Get signer (deployer) to interact with contracts
+  const [deployer] = await ethers.getSigners();
+  console.log("Interacting with contracts using account:", deployer.address);
 
-    // Create a provider connected to the user's wallet
-    const provider = new ethers.BrowserProvider(window.ethereum);
-    const signer = await provider.getSigner();
+  // Get instances of deployed contracts
+  const MyToken = await ethers.getContractAt("MyToken", myTokenAddress);
+  const TokenSale = await ethers.getContractAt("SUYT2TokenSale", tokenSaleAddress);
 
-    console.log("Connected wallet address:", await signer.getAddress());
-    return { provider, signer };
-  } else {
-    alert("Please install MetaMask!");
-    return null;
-  }
-}
+  // Example interaction with MyToken contract
+  const deployerBalance = await MyToken.balanceOf(deployer.address);
+  console.log(`Deployer's SUYT1 token balance:`, ethers.formatUnits(deployerBalance, 18));
 
-async function interactWithContracts() {
-  const { provider, signer } = await connectWallet();
-  if (!provider || !signer) return;
+  // Mint additional tokens (only if deployer is the owner)
+  const mintAmount = ethers.parseUnits("100", 18);
+  const mintTx = await MyToken.mint(deployer.address, mintAmount);
+  await mintTx.wait();
+  console.log(`Minted ${ethers.formatUnits(mintAmount, 18)} SUYT1 tokens to deployer.`);
 
-  // Initialize contract instances
-  const MyToken = new ethers.Contract(myTokenAddress, MyTokenABI, signer);
-  const TokenSale = new ethers.Contract(tokenSaleAddress, TokenSaleABI, signer);
-
-  // Example: Get deployer's balance
-  const balance = await MyToken.balanceOf(await signer.getAddress());
-  console.log(`Your SUYT1 token balance:`, ethers.formatUnits(balance, 18));
-
-  // Example: Mint tokens (if the connected user is the owner)
-  try {
-    const mintAmount = ethers.parseUnits("100", 18);
-    const mintTx = await MyToken.mint(await signer.getAddress(), mintAmount);
-    await mintTx.wait();
-    console.log(`Minted ${ethers.formatUnits(mintAmount, 18)} SUYT1 tokens to your address.`);
-  } catch (error) {
-    console.error("Minting failed:", error);
-  }
-
-  // Example: Purchase tokens from TokenSale with ETH
+  // Example interaction with SUYT2TokenSale contract
   const tokenPriceInETH = await TokenSale.tokenPriceETH();
-  const purchaseAmount = 5;
-  const cost = tokenPriceInETH.mul(purchaseAmount);
-  try {
-    const purchaseTx = await TokenSale.buyTokens(purchaseAmount, { value: cost });
-    await purchaseTx.wait();
-    console.log(`Purchased ${purchaseAmount} SUYT1 tokens with ETH.`);
-  } catch (error) {
-    console.error("Purchase failed:", error);
-  }
+  console.log(`Token price in ETH:`, ethers.formatUnits(tokenPriceInETH, 18));
+
+  // Purchase SUYT1 tokens with ETH
+  const purchaseAmount = ethers.parseUnits("5", 18); // Buying 5 SUYT1 tokens
+  const cost = tokenPriceInETH * 5;
+  const purchaseTx = await TokenSale.buyTokens(5, { value: cost });
+  await purchaseTx.wait();
+  console.log(`Purchased 5 SUYT1 tokens with ETH.`);
 }
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
