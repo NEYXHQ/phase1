@@ -10,7 +10,7 @@ contract SUYT2TokenSale is Ownable, ReentrancyGuard {
     IERC20 public SUYT1Token;   // SUYT1 - 0xF940D4F9CfDE0313Fe7A49401dE23869Dd3D834C
     IERC20 public USDCcoin;     // USDC - 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238
     
-    uint256 public tokenPriceETH = 0.007 ether;     // Price of one token in wei (ETH's smallest unit)
+    uint256 public tokenPriceETH = 0.007 ether;     // Price of one full token in wei (ETH's smallest unit)
     uint256 public tokenPriceUSDC = 30 * 10**6;     // 30 USDC with 6 decimal places
 
     event DebugLog(string message, uint256 value);
