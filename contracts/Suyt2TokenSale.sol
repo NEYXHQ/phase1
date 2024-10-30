@@ -5,10 +5,10 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
 
-contract SUYT2TokenSale is Ownable, ReentrancyGuard {
+contract SUYT2TokenSale is Ownable, ReentrancyGuard { // 0x19fB0271e0F0380645b15C409e43e92F8774b5F1
     
-    IERC20 public SUYT1Token;   // SUYT1 - 0xF940D4F9CfDE0313Fe7A49401dE23869Dd3D834C
-    IERC20 public USDCcoin;     // USDC - 0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238
+    IERC20 public SUYT1Token;   // SUYT1 - 0xff52a4D0Dd66125Cae78222B5F397531CCB76DE8
+    IERC20 public USDCcoin;     // USDC - 0x6f183a566C879b06630DB90dC236f600A22130b2
     
     uint256 public tokenPriceETH = 0.007 ether;     // Price of one full token in wei (ETH's smallest unit)
     uint256 public tokenPriceUSDC = 30 * 10**6;     // 30 USDC with 6 decimal places
@@ -25,14 +25,16 @@ contract SUYT2TokenSale is Ownable, ReentrancyGuard {
         USDCcoin = _USDCcoin;
     }
 
-    // Function to set the price of each token (in wei) for a full
-    function setTokenPriceETH(uint256 _price) public onlyOwner {
-        tokenPriceETH = _price;
+    // Function to set the price in full ETH for clarity (e.g., 0.01 for 0.01 ETH per token)
+    function setTokenPriceETH(uint256 _priceInEth) public onlyOwner {
+        // Convert full ETH price to wei (smallest unit of ETH)
+        tokenPriceETH = _priceInEth * 10**18;
     }
 
-    // Function to set the price of each token (in wei) for a full
-    function setTokenPriceUSDC(uint256 _price) public onlyOwner {
-        tokenPriceUSDC = _price * 10**6;
+    // Function to set the price in full USDC (e.g., 30 for 30 USDC per token)
+    function setTokenPriceUSDC(uint256 _priceInUsdc) public onlyOwner {
+        // Convert full USDC price to smallest USDC unit (6 decimals)
+        tokenPriceUSDC = _priceInUsdc * 10**6;
     }
 
     // Function to deposit tokens into the sale contract (increase supply)
