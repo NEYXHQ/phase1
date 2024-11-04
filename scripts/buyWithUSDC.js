@@ -3,9 +3,9 @@ const { ethers } = hre;
 
 async function main() {
     // Specify deployed contract addresses
-    const myTokenAddress = "0xc6e7DF5E7b4f2A278906862b61205850344D4e7d";
-    const tokenSaleAddress = "0x4ed7c70F96B99c776995fB64377f0d4aB3B0e1C1";
-    const mockUSDCAddress = "0x59b670e9fA9D0A427751Af201D676719a970857b";
+    const myTokenAddress = "0xff52a4D0Dd66125Cae78222B5F397531CCB76DE8";
+    const tokenSaleAddress = "0x19fB0271e0F0380645b15C409e43e92F8774b5F1";
+    const mockUSDCAddress = "0x6f183a566C879b06630DB90dC236f600A22130b2";
 
     // Get deployer and buyer accounts
     const [deployer, buyer] = await ethers.getSigners();
