@@ -1,0 +1,27 @@
+name: Sync with AltoPal0 Repo
+
+# Schedule the action to run daily at midnight UTC
+on:
+  schedule:
+    - cron: '0 30 * * *' # Daily at midnight 30 UTC
+  workflow_dispatch: # Allows manual trigger
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Company Repository
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false # Disable automatic token to avoid overwriting
+
+      - name: Add ALtoPal0 Repo as Remote
+        run: git remote add personal https://github.com/AltoPal0/phase1.git
+
+      - name: Fetch and Merge Personal Repo Changes
+        run: |
+          git fetch personal
+          git merge personal/main -m "Sync from personal repo"
+          git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
