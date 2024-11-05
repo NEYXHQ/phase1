@@ -21,7 +21,7 @@ jobs:
       - name: Fetch and Merge Personal Repo Changes
         run: |
           git fetch personal
-          git merge personal/main -m "Sync from personal repo"
+          git merge personal/main --allow-unrelated-histories -m "Sync from personal repo"
           git push origin main
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
