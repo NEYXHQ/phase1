@@ -1,12 +1,23 @@
+// HardHat succesfull deployment for ALL
+// Deploying contracts with the account: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+
+// MyToken (SUYT1) deployed to: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0 (SUYT1)
+// MockUSDC deployed to: 0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82 (USDC)
+// MockV3Aggregator deployed to: 0x9A676e781A523b5d0C0e43731313A708CB607508 (LINK)
+// SUYT2TokenSale deployed to: 0x0B306BF915C4d645ff596e518fAf3F9669b97016 (Sale)
+
+// Minted 10000 SUYT1 tokens to deployer: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+// Minted 500 USDC to recipient: 0x054131B1EE0c96b5c9EbC6217F4f5E072c0E03C6
+
 const hre = require("hardhat");
 const { ethers } = hre;
 
 async function main() {
     // Specify deployed contract addresses
-    const myTokenAddress = "0xff52a4D0Dd66125Cae78222B5F397531CCB76DE8";
-    const tokenSaleAddress = "0x23BaD021cb18c5050501c1e6E8ABfd651368DED9";
-    const mockUSDCAddress = "0x6f183a566C879b06630DB90dC236f600A22130b2";
-    const chainLinkFeedETHUSD = "0x694AA1769357215DE4FAC081bf1f309aDC325306";
+    const myTokenAddress = "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0";
+    const tokenSaleAddress = "0x0B306BF915C4d645ff596e518fAf3F9669b97016";
+    const mockUSDCAddress = "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82";
+    const chainLinkFeedETHUSD = "0x9A676e781A523b5d0C0e43731313A708CB607508";
 
     // Get deployer and buyer accounts
     const [deployer, buyer] = await ethers.getSigners();
@@ -27,9 +38,10 @@ async function main() {
     const buyerInitialEthBalance = await ethers.provider.getBalance(buyer.address);
     console.log("Buyer's initial ETH balance:", ethers.formatUnits(buyerInitialEthBalance, 18), "ETH");
 
+    // >>> Commented out since ETH price is calculated with Oracle <<<<
     // Retrieve token price from the sale contract
-    const tokenPriceInETH = await TokenSale.tokenPriceETH();
-    console.log("Token price in ETH (in wei):", tokenPriceInETH.toString());
+    // const tokenPriceInETH = await TokenSale.tokenPriceETH();
+    // console.log("Token price in ETH (in wei):", tokenPriceInETH.toString());
 
     // Set purchase quantity for the buyer and calculate the total cost
     // const tokensForSale = await MyToken.balanceOf(tokenSaleAddress);
@@ -38,6 +50,8 @@ async function main() {
     // console.log("SUYT1 tokens held in the sale contract:", ethers.formatUnits(tokensForSale, 18));
     // console.log("Buyer Purchase Quantity (in smallest units):", buyerPurchaseQuantity.toString());
     // console.log("Buyer Total Cost (in wei):", buyerTotalCost.toString());
+    // >>> Commented out since ETH price is calculated with Oracle <<<<
+
 
     // // Execute purchase transaction from buyer account
     // const purchaseTx = await TokenSale.connect(buyer).buyTokens(10, { value: buyerTotalCost });
