@@ -18,9 +18,20 @@ async function main() {
   await mockUSDC.waitForDeployment();
   console.log("MockUSDC deployed to:", await mockUSDC.getAddress());
 
+  // Deploy MockV3Aggregator with an initial price (e.g., 30 * 10^8 for $3000)
+  /// Set the initial price with 8 decimals, e.g., 3000 * 10^6 for 3000
+  const initialAnswer = 3000000; // Represents $3000 with 8 decimals
+  const MockV3Aggregator = await ethers.getContractFactory("MockV3Aggregator");
+  
+  const mockAggregator = await MockV3Aggregator.deploy(initialAnswer);
+  await mockAggregator.waitForDeployment();
+
+  const address = await mockAggregator.getAddress();
+  console.log("MockV3Aggregator deployed to:", address);
+
   // Deploy the SUYT2TokenSale contract
   const SUYT2TokenSale = await ethers.getContractFactory("SUYT2TokenSale");
-  const tokenSale = await SUYT2TokenSale.deploy(await myToken.getAddress(), await mockUSDC.getAddress(), deployer.address);
+  const tokenSale = await SUYT2TokenSale.deploy(await myToken.getAddress(), await mockUSDC.getAddress(),await mockAggregator.getAddress(), deployer.address);
   await tokenSale.waitForDeployment();
   console.log("SUYT2TokenSale deployed to:", await tokenSale.getAddress());
 
