@@ -14,10 +14,10 @@ const { ethers } = hre;
 
 async function main() {
   // Specify deployed contract addresses
-  const myTokenAddress = "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0";
-  // const tokenSaleAddress = "0x0B306BF915C4d645ff596e518fAf3F9669b97016";
-  const mockUSDCAddress = "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82";
-  const priceFeedAddress = "0x9A676e781A523b5d0C0e43731313A708CB607508";
+  // const myTokenAddress = "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0";
+  const tokenSaleAddress = "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690";
+  // const mockUSDCAddress = "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82";
+  const mockAggregatorAddress = "0x9A676e781A523b5d0C0e43731313A708CB607508";
 
   // Get deployer and buyer accounts
   const [deployer, buyer] = await ethers.getSigners();
@@ -30,7 +30,7 @@ async function main() {
 
   // Get the contract factory for MockV3Aggregator and attach it to the deployed address
   const MockV3Aggregator = await ethers.getContractFactory("MockV3Aggregator");
-  const mockAggregator = MockV3Aggregator.attach(priceFeedAddress);
+  const mockAggregator = MockV3Aggregator.attach(mockAggregatorAddress);
 
   // Set the USD / ETH pair price
   await mockAggregator.updateAnswer(300000000000);
@@ -43,13 +43,7 @@ async function main() {
   console.log(`Current USD/ETH Price from Mock Aggregator: $${price}`);
 
   const SUYT2TokenSale = await ethers.getContractFactory("SUYT2TokenSale");
-  const tokenSaleContract = await SUYT2TokenSale.deploy(
-    myTokenAddress,
-    mockUSDCAddress,
-    deployer.address,
-    priceFeedAddress
-  );
-  console.log("SUYT2TokenSale deployed to:", await tokenSaleContract.getAddress());
+  const tokenSaleContract = SUYT2TokenSale.attach(tokenSaleAddress);
 
   // Fetch the latest ETH/USD price from the SUYT2TokenSale contract
   const latestPrice = await tokenSaleContract.getLatestETHPrice();
