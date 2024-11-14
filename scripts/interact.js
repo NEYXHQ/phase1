@@ -17,7 +17,7 @@ async function main() {
     const myTokenAddress = "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0";
     const tokenSaleAddress = "0x0B306BF915C4d645ff596e518fAf3F9669b97016";
     const mockUSDCAddress = "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82";
-    const chainLinkFeedETHUSD = "0x9A676e781A523b5d0C0e43731313A708CB607508";
+    const mockAggregatorAddress = "0x9A676e781A523b5d0C0e43731313A708CB607508";
 
     // Get deployer and buyer accounts
     const [deployer, buyer] = await ethers.getSigners();
@@ -28,35 +28,21 @@ async function main() {
     const MyToken = await ethers.getContractAt("MyToken", myTokenAddress);
     const TokenSale = await ethers.getContractAt("SUYT2TokenSale", tokenSaleAddress);
 
-    // Deposit tokens into the sale contract (done by deployer)
-    // const depositAmount = ethers.parseUnits("100", 18);
-    // const depositTx = await MyToken.transfer(tokenSaleAddress, depositAmount);
-    // await depositTx.wait();
-    // console.log("Deposited 100 SUYT1 tokens into the token sale contract.");
+    // Get the contract factory for MockV3Aggregator and attach it to the deployed address
+    const MockV3Aggregator = await ethers.getContractFactory("MockV3Aggregator");
+    const mockAggregator = MockV3Aggregator.attach(mockAggregatorAddress);
 
-    // Retrieve and print the current ETH balance of the buyer
-    const buyerInitialEthBalance = await ethers.provider.getBalance(buyer.address);
-    console.log("Buyer's initial ETH balance:", ethers.formatUnits(buyerInitialEthBalance, 18), "ETH");
+    // Set the USD / ETH pair price
+    await mockAggregator.updateAnswer(300000000000);
+    
+    // Fetch the latest price using latestRoundData
+    const [, latestAnswer] = await mockAggregator.latestRoundData();
 
-    // >>> Commented out since ETH price is calculated with Oracle <<<<
-    // Retrieve token price from the sale contract
-    // const tokenPriceInETH = await TokenSale.tokenPriceETH();
-    // console.log("Token price in ETH (in wei):", tokenPriceInETH.toString());
+    // Convert the price from the int256 format with 8 decimals
+    const price = parseFloat(ethers.formatUnits(latestAnswer, 8));
+    console.log(`Current USD/ETH Price from Mock Aggregator: $${price}`);
 
-    // Set purchase quantity for the buyer and calculate the total cost
-    // const tokensForSale = await MyToken.balanceOf(tokenSaleAddress);
-    // const buyerPurchaseQuantity = ethers.parseUnits("10", 18); // Buying 10 full tokens
-    // const buyerTotalCost = tokenPriceInETH * BigInt(10); // Total cost for 10 tokens in wei
-    // console.log("SUYT1 tokens held in the sale contract:", ethers.formatUnits(tokensForSale, 18));
-    // console.log("Buyer Purchase Quantity (in smallest units):", buyerPurchaseQuantity.toString());
-    // console.log("Buyer Total Cost (in wei):", buyerTotalCost.toString());
-    // >>> Commented out since ETH price is calculated with Oracle <<<<
-
-
-    // // Execute purchase transaction from buyer account
-    // const purchaseTx = await TokenSale.connect(buyer).buyTokens(10, { value: buyerTotalCost });
-    // await purchaseTx.wait();
-    // console.log("Purchase transaction completed for buyer (10 tokens).");
+    
 
     // // Print updated ETH balance of buyer
     // const buyerUpdatedEthBalance = await ethers.provider.getBalance(buyer.address);
