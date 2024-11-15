@@ -1,10 +1,10 @@
 // HardHat succesfull deployment for ALL
 // Deploying contracts with the account: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 
-// MyToken (SUYT1) deployed to: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0 (SUYT1)
-// MockUSDC deployed to: 0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82 (USDC)
-// MockV3Aggregator deployed to: 0x9A676e781A523b5d0C0e43731313A708CB607508 (LINK)
-// SUYT2TokenSale deployed to: 0x0B306BF915C4d645ff596e518fAf3F9669b97016 (Sale)
+// MyToken (SUYT1) deployed to: 0x5eb3Bc0a489C5A8288765d2336659EbCA68FCd00
+// MockUSDC deployed to: 0x36C02dA8a0983159322a80FFE9F24b1acfF8B570
+// MockV3Aggregator deployed to: 0x809d550fca64d94Bd9F66E60752A544199cfAC3D
+// SUYT2TokenSale deployed to: 0x4c5859f0F772848b2D91F1D83E2Fe57935348029
 
 // Minted 10000 SUYT1 tokens to deployer: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 // Minted 500 USDC to recipient: 0x054131B1EE0c96b5c9EbC6217F4f5E072c0E03C6
@@ -14,10 +14,8 @@ const { ethers } = hre;
 
 async function main() {
   // Specify deployed contract addresses
-  // const myTokenAddress = "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0";
-  const tokenSaleAddress = "0xc3e53F4d16Ae77Db1c982e75a937B9f60FE63690";
-  // const mockUSDCAddress = "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82";
-  const mockAggregatorAddress = "0x9A676e781A523b5d0C0e43731313A708CB607508";
+  const tokenSaleAddress = "0x4c5859f0F772848b2D91F1D83E2Fe57935348029";
+  const mockAggregatorAddress = "0x809d550fca64d94Bd9F66E60752A544199cfAC3D";
 
   // Get deployer and buyer accounts
   const [deployer, buyer] = await ethers.getSigners();
@@ -34,6 +32,7 @@ async function main() {
 
   // Set the USD / ETH pair price
   await mockAggregator.updateAnswer(300000000000);
+  console.log(`Agregator Address: ${mockAggregator.address}`)
 
   // Fetch the latest price using latestRoundData
   const [, latestAnswer] = await mockAggregator.latestRoundData();
@@ -43,26 +42,26 @@ async function main() {
   console.log(`Current USD/ETH Price from Mock Aggregator: $${price}`);
 
   const SUYT2TokenSale = await ethers.getContractFactory("SUYT2TokenSale");
+  console.log(`1`);
   const tokenSaleContract = SUYT2TokenSale.attach(tokenSaleAddress);
-
+  console.log(`2`);
   // Fetch the latest ETH/USD price from the SUYT2TokenSale contract
   const latestPrice = await tokenSaleContract.getLatestETHPrice();
+  console.log(`3`);
   console.log(`Current USD/ETH Price from Mock Aggregator within contract call: $${latestPrice}`);
 
   // Format the price for display (18 decimals)
-  // const ethPriceInUSD = parseFloat(ethers.formatUnits(latestPrice, 18));
-  // console.log(`Latest ETH/USD price from Chainlink: $${ethPriceInUSD}`);
-
-  // // Display the fetched ETH/USD price
-  // console.log(`Latest ETH/USD price from Chainlink: $${ethPriceInUSD}`);
+  const ethPriceInUSD = parseFloat(ethers.formatUnits(latestPrice, 18));
+  console.log(`Latest ETH/USD price from Chainlink: $${ethPriceInUSD}`);
 
   // // Define the number of tokens to buy (1 token)
-  // const numFullTokens = 1;
+  const numFullTokens = 1;
 
   // // Calculate the total cost in ETH for 1 token based on the USD price
-  // const tokenPriceInUSD = 30; // USD price for 1 token, based on tokenPriceUSDC
-  // const totalCostInETH = await tokenSaleContract.getEquivalentETHAmount(tokenPriceInUSD * 10 ** 6); // Convert USD to the smallest unit in USDC (6 decimals)
-
+  const tokenPriceInUSD = await tokenSaleContract.tokenPriceUSDC();
+  console.log(`SUYT token price in USDC: $${ethers.formatUnits(tokenPriceInUSD, 6)} - ${tokenPriceInUSD}`);
+  const totalCostInETH = await tokenSaleContract.getEquivalentETHAmount(tokenPriceInUSD);
+  console.log(`SUYT token price in ETH based on agregator: $${ethers.formatUnits(totalCostInETH,18) }`);
   // // Convert totalCostInETH to a format for sending in the transaction
   // const totalCostInETHFormatted = ethers.formatUnits(totalCostInETH, 18);
 

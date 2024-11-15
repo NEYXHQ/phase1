@@ -55,8 +55,14 @@ contract SUYT2TokenSale is Ownable, ReentrancyGuard { // 0x0B306BF915C4d645ff596
 
     // Function to calculate the equivalent ETH price for a given USDC amount
     function getEquivalentETHAmount(uint256 usdcAmount) public view returns (uint256) {
+
+        // Retrieve the decimals of USDC and ETH (18 decimals for ETH by convention)
+        uint8 usdcDecimals = 6;
+        uint8 ethDecimals = 18; // ETH typically has 18 decimals
+        uint256 scaleFactor = 10 ** (ethDecimals - usdcDecimals);
+
         uint256 ethPrice = getLatestETHPrice();
-        return (usdcAmount * 10**18) / ethPrice; // Convert to wei
+        return (usdcAmount * scaleFactor) / ethPrice; // Convert to wei
     }
 
     // Function to get the latest ETH/USD price from the Chainlink oracle
