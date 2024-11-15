@@ -20,7 +20,7 @@ import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.so
 // Minted 10000 SUYT1 tokens to deployer: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 // Minted 500 USDC to recipient: 0x054131B1EE0c96b5c9EbC6217F4f5E072c0E03C6
 
-contract SUYT2TokenSale is Ownable, ReentrancyGuard { // 0x0B306BF915C4d645ff596e518fAf3F9669b97016
+contract SUYT2TokenSale is Ownable, ReentrancyGuard { 
     
     IERC20 public SUYT1Token;   
     IERC20 public USDCcoin;     

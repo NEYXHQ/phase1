@@ -1,21 +1,16 @@
 // HardHat succesfull deployment for ALL
 // Deploying contracts with the account: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 
-// MyToken (SUYT1) deployed to: 0x5eb3Bc0a489C5A8288765d2336659EbCA68FCd00
-// MockUSDC deployed to: 0x36C02dA8a0983159322a80FFE9F24b1acfF8B570
-// MockV3Aggregator deployed to: 0x809d550fca64d94Bd9F66E60752A544199cfAC3D
-// SUYT2TokenSale deployed to: 0x4c5859f0F772848b2D91F1D83E2Fe57935348029
-
-// Minted 10000 SUYT1 tokens to deployer: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-// Minted 500 USDC to recipient: 0x054131B1EE0c96b5c9EbC6217F4f5E072c0E03C6
+// MockV3Aggregator deployed to: 0x7969c5eD335650692Bc04293B07F5BF2e7A673C0
+// SUYT2TokenSale deployed to: 0x7bc06c482DEAd17c0e297aFbC32f6e63d3846650
 
 const hre = require("hardhat");
 const { ethers } = hre;
 
 async function main() {
   // Specify deployed contract addresses
-  const tokenSaleAddress = "0x4c5859f0F772848b2D91F1D83E2Fe57935348029";
-  const mockAggregatorAddress = "0x809d550fca64d94Bd9F66E60752A544199cfAC3D";
+  const tokenSaleAddress = "0x7bc06c482DEAd17c0e297aFbC32f6e63d3846650";
+  const mockAggregatorAddress = "0x7969c5eD335650692Bc04293B07F5BF2e7A673C0";
 
   // Get deployer and buyer accounts
   const [deployer, buyer] = await ethers.getSigners();
@@ -28,11 +23,11 @@ async function main() {
 
   // Get the contract factory for MockV3Aggregator and attach it to the deployed address
   const MockV3Aggregator = await ethers.getContractFactory("MockV3Aggregator");
-  const mockAggregator = MockV3Aggregator.attach(mockAggregatorAddress);
+  const mockAggregator = await MockV3Aggregator.attach(mockAggregatorAddress);
+  console.log("Attached MockV3Aggregator Address:", mockAggregator.target);
 
   // Set the USD / ETH pair price
   await mockAggregator.updateAnswer(300000000000);
-  console.log(`Agregator Address: ${mockAggregator.address}`)
 
   // Fetch the latest price using latestRoundData
   const [, latestAnswer] = await mockAggregator.latestRoundData();
