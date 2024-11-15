@@ -11,18 +11,20 @@ import "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.so
 
 // HardHat succesfull deployment for ALL
 // Deploying contracts with the account: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-// MyToken (SUYT1) deployed to: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
-// MockUSDC deployed to: 0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82
-// MockV3Aggregator deployed to: 0x9A676e781A523b5d0C0e43731313A708CB607508
-// SUYT2TokenSale deployed to: 0x0B306BF915C4d645ff596e518fAf3F9669b97016
+
+// MyToken (SUYT1) deployed to: 0x82e01223d51Eb87e16A03E24687EDF0F294da6f1
+// MockUSDC deployed to: 0x2bdCC0de6bE1f7D2ee689a0342D76F52E8EFABa3
+// MockV3Aggregator deployed to: 0x7969c5eD335650692Bc04293B07F5BF2e7A673C0
+// SUYT2TokenSale deployed to: 0x7bc06c482DEAd17c0e297aFbC32f6e63d3846650
+
 // Minted 10000 SUYT1 tokens to deployer: 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
 // Minted 500 USDC to recipient: 0x054131B1EE0c96b5c9EbC6217F4f5E072c0E03C6
 
 contract SUYT2TokenSale is Ownable, ReentrancyGuard { // 0x0B306BF915C4d645ff596e518fAf3F9669b97016
     
-    IERC20 public SUYT1Token;   // SUYT1 - 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
-    IERC20 public USDCcoin;     // USDC - 0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82
-    AggregatorV3Interface internal priceFeed; // Chainlink price feed interface - 0x9A676e781A523b5d0C0e43731313A708CB607508
+    IERC20 public SUYT1Token;   
+    IERC20 public USDCcoin;     
+    AggregatorV3Interface internal priceFeed; 
     
     uint256 public tokenPriceETH = 0.007 ether;     // Price of one full token in wei (ETH's smallest unit)
     uint256 public tokenPriceUSDC = 30 * 10**6;     // 30 USDC with 6 decimal places
