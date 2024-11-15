@@ -3,6 +3,7 @@
 // Suyt2TokenSale.sol
 pragma solidity ^0.8.20;
 
+import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable2Step.sol";
@@ -27,7 +28,7 @@ contract SUYT2TokenSale is Ownable, ReentrancyGuard {
     AggregatorV3Interface internal priceFeed; 
     
     uint256 public tokenPriceETH = 0.007 ether;     // Price of one full token in wei (ETH's smallest unit)
-    uint256 public tokenPriceUSDC = 30 * 10**6;     // 30 USDC with 6 decimal places
+    uint256 public tokenPriceUSDC = 30 * 10**18;     // 30 USDC with 18 decimal places
 
     event DebugLog(string message, uint256 value);
 
@@ -52,19 +53,19 @@ contract SUYT2TokenSale is Ownable, ReentrancyGuard {
     // Function to set the price in full USDC (e.g., 30 for 30 USDC per token)
     function setTokenPriceUSDC(uint256 _priceInUsdc) public onlyOwner {
         // Convert full USDC price to smallest USDC unit (6 decimals)
-        tokenPriceUSDC = _priceInUsdc * 10**6;
+        tokenPriceUSDC = _priceInUsdc * 10**18;
     }
 
     // Function to calculate the equivalent ETH price for a given USDC amount
     function getEquivalentETHAmount(uint256 usdcAmount) public view returns (uint256) {
 
-        // Retrieve the decimals of USDC and ETH (18 decimals for ETH by convention)
-        uint8 usdcDecimals = 6;
-        uint8 ethDecimals = 18; // ETH typically has 18 decimals
-        uint256 scaleFactor = 10 ** (ethDecimals - usdcDecimals);
-
+        // ALL Prices in 18 decimals
         uint256 ethPrice = getLatestETHPrice();
-        return (usdcAmount * scaleFactor) / ethPrice; // Convert to wei
+        uint256 USDCPriceInETH = (usdcAmount * 10**18)/ ethPrice;
+        console.log("USDC amount     ", usdcAmount );
+        console.log("   ethPrice     ", ethPrice);
+        console.log(" USDCPriceInETH ", USDCPriceInETH);
+        return (USDCPriceInETH);
     }
 
     // Function to get the latest ETH/USD price from the Chainlink oracle
