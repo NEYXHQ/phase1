@@ -12,19 +12,17 @@ contract MyToken is ERC20, ERC20Burnable, ERC20Permit, Ownable, AccessControl, P
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
 
-    constructor(
-        string memory name, 
-        string memory symbol, 
-        uint256 initialSupply,
+    constructor( 
+        // uint256 initialSupply,
         address initialOwner
-    ) ERC20(name, symbol) ERC20Permit(name) Ownable(initialOwner) {
+    ) ERC20("NEYX01", "NEYX_T1") ERC20Permit("NEYX01") Ownable(initialOwner) {
         // Assign deployer as the initial owner and roles
         _grantRole(DEFAULT_ADMIN_ROLE, initialOwner);
         _grantRole(MINTER_ROLE, initialOwner);
         _grantRole(PAUSER_ROLE, initialOwner);
 
-        // Mint the initial supply to the deployer
-        _mint(initialOwner, initialSupply);
+        // // Mint the initial supply to the deployer
+        // _mint(initialOwner, initialSupply);
     }
 
     // Mint tokens, restricted to MINTER_ROLE
