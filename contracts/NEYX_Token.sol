@@ -1,5 +1,10 @@
+// SPDX-License-Identifier: MIT
+
+// NEYX_Token.sol
+
 pragma solidity ^0.8.20;
 
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -7,7 +12,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/Pausable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract MyToken is ERC20, ERC20Burnable, ERC20Permit, Ownable, AccessControl, Pausable, ReentrancyGuard {
+contract NEYX01 is ERC20, ERC20Burnable, ERC20Permit, Ownable, AccessControl, Pausable, ReentrancyGuard {
     // Define roles for admin, minter, and pauser
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
@@ -49,12 +54,8 @@ contract MyToken is ERC20, ERC20Burnable, ERC20Permit, Ownable, AccessControl, P
         revokeRole(DEFAULT_ADMIN_ROLE, msg.sender);
     }
 
-    // Hook to enforce pausing during transfers
-    function _beforeTokenTransfer(address from, address to, uint256 amount)
-        internal
-        override
-        whenNotPaused
-    {
-        super._beforeTokenTransfer(from, to, amount);
+    // Override transfer to include whenNotPaused
+    function transfer(address to, uint256 amount) public override whenNotPaused returns (bool) {
+        return super.transfer(to, amount);
     }
 }

@@ -6,7 +6,7 @@ async function main() {
   console.log("Deploying contracts with the account:", deployer.address);
 
   // Deploy the NEYX Token contract
-  const MyToken = await ethers.getContractFactory("NEYX_Token");
+  const MyToken = await ethers.getContractFactory("NEYX01");
   const myToken = await MyToken.deploy(deployer.address);
   await myToken.waitForDeployment();
   console.log("NEYXT Token deployed to:", await myToken.getAddress());
