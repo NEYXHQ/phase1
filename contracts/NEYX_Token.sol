@@ -1,61 +1,44 @@
 // SPDX-License-Identifier: MIT
+// Compatible with OpenZeppelin Contracts ^5.0.0
+pragma solidity ^0.8.22;
 
-// NEYX_Token.sol
+import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {ERC20Burnable} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import {ERC20Pausable} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
+import {ERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 
-pragma solidity ^0.8.20;
-
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/utils/Pausable.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-
-contract NEYX01 is ERC20, ERC20Burnable, ERC20Permit, Ownable, AccessControl, Pausable, ReentrancyGuard {
-    // Define roles for admin, minter, and pauser
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+contract NEYX is ERC20, ERC20Burnable, ERC20Pausable, AccessControl, ERC20Permit {
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
-    constructor( 
-        // uint256 initialSupply,
-        address initialOwner
-    ) ERC20("NEYX01", "NEYX_T1") ERC20Permit("NEYX01") Ownable(initialOwner) {
-        // Assign deployer as the initial owner and roles
-        _grantRole(DEFAULT_ADMIN_ROLE, initialOwner);
-        _grantRole(MINTER_ROLE, initialOwner);
-        _grantRole(PAUSER_ROLE, initialOwner);
-
-        // // Mint the initial supply to the deployer
-        // _mint(initialOwner, initialSupply);
+    constructor(address defaultAdmin, address pauser, address minter)
+        ERC20("NEYX", "NEYX_T")
+        ERC20Permit("NEYX")
+    {
+        _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
+        _grantRole(PAUSER_ROLE, pauser);
+        _grantRole(MINTER_ROLE, minter);
     }
 
-    // Mint tokens, restricted to MINTER_ROLE
-    function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) {
-        _mint(to, amount);
-    }
-
-    // Pause transfers, restricted to PAUSER_ROLE
     function pause() public onlyRole(PAUSER_ROLE) {
         _pause();
     }
 
-    // Unpause transfers, restricted to PAUSER_ROLE
     function unpause() public onlyRole(PAUSER_ROLE) {
         _unpause();
     }
 
-    // Transfer admin role to another address (e.g., multisig)
-    function transferAdminRole(address newAdmin) public onlyOwner nonReentrant {
-        require(newAdmin != address(0), "New admin cannot be the zero address");
-        // Grant the new admin role
-        grantRole(DEFAULT_ADMIN_ROLE, newAdmin);
-        // Revoke admin role from the current admin
-        revokeRole(DEFAULT_ADMIN_ROLE, msg.sender);
+    function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) {
+        _mint(to, amount);
     }
 
-    // Override transfer to include whenNotPaused
-    function transfer(address to, uint256 amount) public override whenNotPaused returns (bool) {
-        return super.transfer(to, amount);
+    // The following functions are overrides required by Solidity.
+
+    function _update(address from, address to, uint256 value)
+        internal
+        override(ERC20, ERC20Pausable)
+    {
+        super._update(from, to, value);
     }
 }
