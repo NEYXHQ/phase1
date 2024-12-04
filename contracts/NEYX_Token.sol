@@ -14,7 +14,7 @@ contract NEYX_Token is ERC20, ERC20Burnable, ERC20Permit, Ownable, ReentrancyGua
 
     constructor (address initialOwner,  address[] memory initialWallets, uint256[] memory initialBalances)
         
-        ERC20("NEYX_Token", "NEYX")
+        ERC20("NEYX_Token", "NEYXT")
         ERC20Permit("NEYX_Token")
         Ownable(initialOwner){
         
