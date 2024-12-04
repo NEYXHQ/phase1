@@ -2,43 +2,44 @@
 // Compatible with OpenZeppelin Contracts ^5.0.0
 pragma solidity ^0.8.22;
 
-import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {ERC20Burnable} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
-import {ERC20Pausable} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Pausable.sol";
 import {ERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
+import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract NEYX is ERC20, ERC20Burnable, ERC20Pausable, AccessControl, ERC20Permit {
-    bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+contract NEYX_Token is ERC20, ERC20Burnable, ERC20Permit, Ownable, ReentrancyGuard {
 
-    constructor(address defaultAdmin, address pauser, address minter)
-        ERC20("NEYX", "NEYX_T")
-        ERC20Permit("NEYX")
-    {
-        _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
-        _grantRole(PAUSER_ROLE, pauser);
-        _grantRole(MINTER_ROLE, minter);
+    uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10 ** 18;
+
+    constructor (address initialOwner,  address[] memory initialWallets, uint256[] memory initialBalances)
+        
+        ERC20("NEYX_Token", "NEYX")
+        ERC20Permit("NEYX_Token")
+        Ownable(initialOwner){
+        
+        require(initialWallets.length == initialBalances.length,"Wallets and balances length mismatch");
+
+        uint256 totalSupplyAllocated = 0;
+        // Mint the total supply and allocate to specified wallets
+        for (uint256 i = 0; i < initialWallets.length; i++) {
+            totalSupplyAllocated += initialBalances[i];
+            require(
+                totalSupplyAllocated <= MAX_SUPPLY,
+                "Total allocation exceeds MAX_SUPPLY"
+            );
+            _mint(initialWallets[i], initialBalances[i]);
+        }
+
+        // Ensure the entire MAX_SUPPLY is allocated
+        require(
+            totalSupplyAllocated == MAX_SUPPLY,
+            "Total allocation must equal MAX_SUPPLY"
+        ); 
     }
 
-    function pause() public onlyRole(PAUSER_ROLE) {
-        _pause();
-    }
-
-    function unpause() public onlyRole(PAUSER_ROLE) {
-        _unpause();
-    }
-
-    function mint(address to, uint256 amount) public onlyRole(MINTER_ROLE) {
-        _mint(to, amount);
-    }
-
-    // The following functions are overrides required by Solidity.
-
-    function _update(address from, address to, uint256 value)
-        internal
-        override(ERC20, ERC20Pausable)
-    {
-        super._update(from, to, value);
+    // Burn function for owner
+    function controlledBurn(uint256 amount) external onlyOwner {
+        _burn(msg.sender, amount);
     }
 }
