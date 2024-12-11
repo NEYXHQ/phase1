@@ -26,14 +26,13 @@ async function main() {
     addr_3_ReserveFund,
     addr_4_MarketingPartners,
     addr_5_TeamAdvisors
-
   ]; // Wallet addresses to receive tokens
   const initialBalances = [
     ethers.parseUnits("300000000", 18), // 300 million tokens
     ethers.parseUnits("300000000", 18), // 300 million tokens
-    ethers.parseUnits("100000000", 18),  // 10 million tokens
-    ethers.parseUnits("50000000", 18),  // 10 million tokens
-    ethers.parseUnits("250000000", 18)  // 10 million tokens
+    ethers.parseUnits("100000000", 18),  // 100 million tokens
+    ethers.parseUnits("50000000", 18),  // 50 million tokens
+    ethers.parseUnits("250000000", 18)  // 250 million tokens
   ]; // Token balances corresponding to wallets
 
   // Check initial wallet and balance length
