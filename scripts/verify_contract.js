@@ -1,0 +1,57 @@
+const hre = require("hardhat");
+
+async function main() {
+  const contractAddress = "0x86b8B002ff72Be60C63E9Ae716348EDC1771F52e"; 
+  const initialOwner = "0x34FD675B1CFf93031F0B80ed837c063952aCCB1f";
+
+  const initialWallets = [
+    "0x1134Bb07cb7F35946E7e02f58cA7fcC64698B59b",
+    "0x99Bb88cbC2A1D0B12f3BA63Cd51aC919B7601179",
+    "0x82c5e1812079FE89bD8240c924592a1DC13BAd18",
+    "0x90730d044Ccd332f5a23844F7E219d2CF0AC467C",
+    "0x89691BaF004bf4A7D9Ce265d47903D3595996Ad7",
+    "0x7Abb72de1cea2C7319338417537f23977dE9c111",
+    "0x33D05F773131Acc38A605506953cE8c1b4580AC0",
+    "0x739D97D7862062B6d14d9998c9513f7922d22A45",
+    "0x68eEB5992bDBf53Ead548E80E59cFCb26bEca892",
+    "0x9B273a89fe6EE30bD568856A169895C4E1e264d1",
+    "0x8F13AF490425D40cA3179E4fa5D6847FcCCd85d6",
+    "0x76E871415906652F268Ae45348564bB0194a65Ee",
+    "0xe8c5E2dd21aaEc34575C2b5FF23708E2616AECd7",
+    "0x4bf431e37539B8528f176B46CFd627699861df58"
+  ];
+
+  const initialBalances = [
+    "300000000000000000000000000",
+    "300000000000000000000000000",
+    "50000000000000000000000000",
+    "10000000000000000000000000",
+    "8571428000000000000000000",
+    "7142858000000000000000000",
+    "14285714000000000000000000",
+    "10000000000000000000000000",
+    "10000000000000000000000000",
+    "10000000000000000000000000",
+    "30000000000000000000000000",
+    "50000000000000000000000000",
+    "50000000000000000000000000",
+    "150000000000000000000000000"
+  ];
+
+  try {
+    await hre.run("verify:verify", {
+      address: contractAddress,
+      constructorArguments: [initialOwner, initialWallets, initialBalances]
+    });
+    console.log("Contract verified successfully!");
+  } catch (error) {
+    console.error("Verification failed:", error.message);
+  }
+}
+
+main()
+  .then(() => process.exit(0))
+  .catch(error => {
+    console.error(error);
+    process.exit(1);
+  });

@@ -75,27 +75,6 @@ async function main() {
     ethers.parseUnits("50000000", 18), //addr_5_1_TeamAdvisors,
     ethers.parseUnits("50000000", 18), //addr_5_2_TeamAdvisors,
     ethers.parseUnits("150000000", 18), //addr_6_0_OtherReserves
-
-
-
-
-
-
-
-
-    // addr_3_3_0_ReserveFund,
-    // addr_3_3_1_ReserveFund,
-    // addr_3_3_2_ReserveFund,
-
-    // addr_3_4_ReserveFund,
-
-    // addr_4_1_MarketingPartners,
-    // addr_4_2_MarketingPartners,
-    // addr_4_3_MarketingPartners,
-
-    // addr_5_1_TeamAdvisors,
-    // addr_5_2_TeamAdvisors,
-    // addr_5_3_TeamAdvisors
   ]; // Token balances corresponding to wallets
 
   // Check initial wallet and balance length

@@ -20,7 +20,7 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       sepolia: process.env.ETHERSCAN_API_KEY_SEPOLIA || "Z251WNSUICUD2GNNMINGK9XYDKWAK5ZNZ2", // Sepolia API Key
-      mainnet: process.env.ETHERSCAN_API_KEY_MAINNET || "", // Mainnet API Key
+      mainnet: process.env.ETHERSCAN_API_KEY_MAINNET || "Z251WNSUICUD2GNNMINGK9XYDKWAK5ZNZ2", // Mainnet API Key
     },
   },
 };
