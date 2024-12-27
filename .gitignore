@@ -1,6 +1,6 @@
 node_modules
 .env
-hardhat.config.ts 
+
 
 
 # Node.js dependencies
@@ -9,6 +9,7 @@ node_modules/
 # Hardhat files
 /cache
 /artifacts
+hardhat.config.ts
 
 # TypeChain files
 /typechain
