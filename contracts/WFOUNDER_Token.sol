@@ -8,14 +8,14 @@ import {ERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20P
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 
-contract NEYX_Token is ERC20, ERC20Burnable, ERC20Permit, Ownable, ReentrancyGuard {
+contract WFOUNDER_Token is ERC20, ERC20Burnable, ERC20Permit, Ownable, ReentrancyGuard {
 
     uint256 public constant MAX_SUPPLY = 1_000_000_000 * 10 ** 18;
 
     constructor (address initialOwner,  address[] memory initialWallets, uint256[] memory initialBalances)
         
-        ERC20("NEYX_Token", "NEYXT")
-        ERC20Permit("NEYX_Token")
+        ERC20("WORLD_FOUNDER", "WFOUNDER")
+        ERC20Permit("WORLD_FOUNDER")
         Ownable(initialOwner){
         
         require(initialWallets.length == initialBalances.length,"Wallets and balances length mismatch");
